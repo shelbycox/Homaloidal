@@ -1,0 +1,17 @@
+a = 2
+b = 2
+n = a + b
+R = QQ[x_0..x_(n+1)]
+
+SMat = (a, b, x) -> (
+    for i from 1 to 2 list (
+    	for j from 1 to n list (
+	    if i == 1 then (
+	    	if j <= a then x_(j-1) else x_j
+	    	)
+	    else if j <= a then x_j else x_(j+1)
+    	    )
+    	)
+    )
+
+SMat(2,2,R_*)
