@@ -56,3 +56,9 @@ B1' = matrix {{ 0, 1, 0}, {1, 0, 0}, {0, 0, 0}}
 B2' = matrix {{ 1, 0, 0}, {0, 0, 0}, {0, 0, 0}}
 det (B0' + x_0*B1' + x_1*x_2*B2') == f2 -- This is not a symmetric determinantal representation.
 
+C = matrix {{ 0, (x_1 + x_2)/2, (x_1 - x_2)/2}, {0, -1/2, 0}, {0, 0, 1/2}}
+C = C + transpose C
+
+block2 = matrix {{ 0, 0}, {0, 0}}
+M11 = (B0' + x_0*B1') ++ block2
+M2 = M11 + C

@@ -20,7 +20,7 @@ S = (a, b, x) -> (
     minors(2, M)
     )
 
-a = 1;
+a = 2;
 b = 3;
 R = QQ[x_0..x_(a+b+1)];
 X = transpose vars R;
@@ -43,16 +43,18 @@ netList I_*
 -- compute S(a,b)*
 loadPackage "Resultants"
 Istar = dualVariety I
-dim Istar
+codim Istar
 degree Istar
 
 -- compute the singular locus (up to degree b)
 JacStar = jacobian Istar
 Jstar = ideal jacobian Istar -- This variety really is linear (see the decomposition), but it doesn't look linear.
 D = decompose Jstar -- But the primary decomposition shows that it is a linear space of dimension 5 - 2 = 3 = b.
+netList D_0_*
 
 -- According to the primary decomposition, the singularities of the dual lie in this linear space.
 Eperp = D_0
+codim Eperp
 
 -- We only need Eperp for the computation of XabStar, so I don't think we need the code below.
 EperpMat = matrix {{1, 0, 0, 0, 0, 0}, {0, 1, 0, 0, 0, 0}} -- TODO: generalize this.
@@ -70,8 +72,9 @@ E = ideal ((transpose gens ker EperpMat)*X)
 -- to find a subspace that contains Eperp, we just need to remove some generators from Eperp.
 Psi = ideal x_0
 
-XabStar = I + Psi
+XabStar = Istar + Psi
 Xab = dualVariety XabStar
+codim Xab
 
 dim Xab -- 
 degree Xab -- 
