@@ -73,8 +73,8 @@ Psi = ideal x_0
 XabStar = I + Psi
 Xab = dualVariety XabStar
 
-dim Xab
-degree Xab
+dim Xab -- 
+degree Xab -- 
 
 --==================================================
 -- find the line directrix Lambda
