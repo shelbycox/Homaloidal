@@ -44,8 +44,8 @@ netList I_*
 -- compute S(a,b)*
 loadPackage "Resultants"
 Istar = dualVariety I
-codim Istar
-degree Istar
+codim Istar == 1 -- the dual is a hypersurface
+degree Istar == a + b -- the dual has degree a + b
 
 -- compute the singular locus (up to degree b)
 JacStar = jacobian Istar
@@ -57,9 +57,12 @@ P = ideal (x_0..x_2, x_3 + random(QQ), x_4 - random(QQ), x_5 - random(QQ), x_6 -
 IstarP = localize (Istar, P)
 degree IstarP -- this point is a singularity of degree 5 in Istar
 
+JJstar = ideal jacobian Jstar -- singularities of degree at least 3 (= b in this example)
+decompose JJstar
+
 -- According to the primary decomposition, the singularities of the dual lie in this linear space.
 Eperp = ideal(x_0..x_2) -- This is a linear space with sigularities containing some singularities of degree 5.
-codim Eperp -- codim 3 --> proj dimension Eperp = 6 - 3 = 3
+codim Eperp == b -- codim b --> proj dimension E = b - 1 -- not sure if this holds in general
 
 -- We only need Eperp for the computation of XabStar, so I don't think we need the code below.
 EperpMat = matrix {{1, 0, 0, 0, 0, 0, 0}, {0, 1, 0, 0, 0, 0, 0}, {0, 0, 1, 0, 0, 0, 0}} -- TODO: generalize this.
@@ -76,22 +79,26 @@ codim E -- so E is 2 dimensional
 --==================================================
 
 -- to find a dim a - 2 = 0 subspace contained in E
-Psi = ideal (x_1..x_6)
-codim Psi == 6 - (a - 2) -- codim 6 - a + 2 => proj dim Psi = a - 2
-isSubset(E, Psi) -- check that V(Psi) contains V(E)
-PsiMat = matrix {{0, 1, 0, 0, 0, 0, 0}, -- Psi generators in matrix form
-				{0, 0, 1, 0, 0, 0, 0}, 
+PsiMat = matrix {(entries random(QQ^1, QQ^7))_0, -- Psi generators in matrix form
+				(entries random(QQ^1, QQ^7))_0, 
 				{0, 0, 0, 1, 0, 0, 0}, 
 				{0, 0, 0, 0, 1, 0, 0}, 
 				{0, 0, 0, 0, 0, 1, 0}, 
 				{0, 0, 0, 0, 0, 0, 1}}
-Psi == ideal (PsiMat*X) -- double check the matrix form
+Psi = ideal (PsiMat*X) -- double check the matrix form
+isSubset(E, Psi) -- check that V(Psi) contains V(E)
 Psiperp = ideal ((transpose gens ker PsiMat)*X) -- get the orthogonal complement
+
+
+EminusSab = saturate(E, I) -- see what generators we need in Psi
+saturate(Psi + I, ideal (x_0..x_6)) == ideal 1_R -- test that Psi is not a point on S(a,b)
+
 
 XabStar = Istar + Psiperp -- get the ideal of XabStar
 codim XabStar
 
-Xab = dualVariety XabStar
+Xab = dualVariety XabStar -- This computation now takes a long time...
+decompose Xab
 codim Xab == 4 -- I think Xab should be a surface, but it has dimension 3.
 dim Xab -- 
 degree Xab -- 
