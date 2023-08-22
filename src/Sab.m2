@@ -104,6 +104,25 @@ dim Xab --
 degree Xab -- 
 
 --==================================================
+-- try computing the dual by hand -- IT WORKS!
+--==================================================
+
+T = QQ[y_0..y_(a+b+1)][x_0..x_(a+b+1)];
+IT = sub(I, T);
+N = transpose jacobian IT
+
+S = QQ[y_0..y_(a+b+1),x_0..x_(a+b+1)];
+N = sub(N, S);
+NN = (vars S)_{0..(a+b+1)} || N
+IT = sub(IT, S);
+
+J = IT + minors(5, NN);
+J = saturate(J, entries (vars S)_{(a+b+2)..(2*a+2*b+3)})
+Xab = eliminate(J, (entries (vars S)_{(a+b+2)..(2*a+2*b+3)})_0)
+
+codim Xab
+
+--==================================================
 -- find the line directrix Lambda
 --==================================================
 
