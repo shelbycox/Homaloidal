@@ -97,7 +97,7 @@ saturate(Psi + I, ideal (x_0..x_6)) == ideal 1_R -- test that Psi is not a point
 XabStar = Istar + Psiperp -- get the ideal of XabStar
 codim XabStar
 
-Xab = dualVariety XabStar -- This computation now takes a long time...
+--Xab = dualVariety XabStar -- This computation now takes a long time...
 decompose Xab
 codim Xab == 4 -- I think Xab should be a surface, but it has dimension 3.
 dim Xab -- 
@@ -108,7 +108,7 @@ degree Xab --
 --==================================================
 
 T = QQ[y_0..y_(a+b+1)][x_0..x_(a+b+1)];
-IT = sub(I, T);
+IT = sub(XabStar, T);
 N = transpose jacobian IT
 
 S = QQ[y_0..y_(a+b+1),x_0..x_(a+b+1)];
@@ -116,8 +116,9 @@ N = sub(N, S);
 NN = (vars S)_{0..(a+b+1)} || N
 IT = sub(IT, S);
 
-J = IT + minors(5, NN);
-J = saturate(J, entries (vars S)_{(a+b+2)..(2*a+2*b+3)})
+J = IT + minors(3, NN);
+singJ = ideal singularLocus J
+J = saturate(J, singJ)
 Xab = eliminate(J, (entries (vars S)_{(a+b+2)..(2*a+2*b+3)})_0)
 
 codim Xab
@@ -126,19 +127,19 @@ codim Xab
 -- find the line directrix Lambda
 --==================================================
 
-LambdaStar = Eperp + Psiperp
-Lambda = dualVariety LambdaStar
-dim Lambda
-degree Lambda
+-- LambdaStar = Eperp + Psiperp
+-- Lambda = dualVariety LambdaStar
+-- dim Lambda
+-- degree Lambda
 
 --==================================================
--- find rulings on X
+-- find rulings on Xab
 --==================================================
 
 
 
 --==================================================
--- compute Phi
+-- compute Phi (spanned by line directrix + rulings)
 --==================================================
 
 
@@ -147,7 +148,7 @@ degree Lambda
 -- compute Y(a, b)*
 --==================================================
 
-
+-- Xabstar + Phiperp
 
 --==================================================
 --- row spans and their orthogonal complements
