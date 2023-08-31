@@ -22,6 +22,8 @@ S = (a, b, x) -> (
 
 a = 2;
 b = 3;
+n = a + b + 1;
+d = a + b;
 R = QQ[x_0..x_(a+b+1)];
 X = transpose vars R;
 
@@ -78,6 +80,8 @@ codim E -- so E is 2 dimensional
 -- Psi \supset E^Perp a linear space.
 --==================================================
 
+EminusSab = saturate(E, I) -- see what generators we need in Psi
+
 -- to find a dim a - 2 = 0 subspace (i.e., a point) contained in E
 PsiMat = matrix {{1, 0, 0, 0, 0, 0, 0}, -- Psi generators in matrix form
 				{0, 0, 1, 0, 0, 0, 0}, 
@@ -86,22 +90,27 @@ PsiMat = matrix {{1, 0, 0, 0, 0, 0, 0}, -- Psi generators in matrix form
 				{0, 0, 0, 0, 0, 1, 0}, 
 				{0, 0, 0, 0, 0, 0, 1}}
 Psi = ideal (PsiMat*X) -- define the ideal
-isSubset(E, Psi) -- check that V(Psi) contains V(E)
-Psiperp = ideal ((transpose gens ker PsiMat)*X) -- get the orthogonal complement
 
-
-EminusSab = saturate(E, I) -- see what generators we need in Psi
+-- checks
+isSubset(E, Psi) -- check that V(E) contains V(Psi)
+codim Psi == 6 -- check that Psi is a point
 saturate(Psi + I, ideal (x_0..x_6)) == ideal 1_R -- test that Psi is not a point on S(a,b)
 
+Psiperp = ideal ((transpose gens ker PsiMat)*X) -- get the orthogonal complement
+dim Psiperp == n
 
 XabStar = Istar + Psiperp -- get the ideal of XabStar
 codim XabStar
 
-Xab = dualVariety XabStar -- WARNING! This computation is slow for points other than this special point!
+--==================================================
+-- computing X(a,b) = (X(a,b)*)*
+--==================================================
+
+Xab = dualVariety XabStar -- WARNING: times out for some Psi!
 decompose Xab
 codim Xab -- I think Xab should be a surface, but it has dimension 3.
 dim Xab -- 
-degree Xab -- 
+degree Xab == a + b -- check the degree
 
 --==================================================
 -- computing the dual by hand --
@@ -127,29 +136,49 @@ codim Xab
 -- find the line directrix Lambda
 --==================================================
 
-LambdaStar = Eperp + Psiperp
+ESab = E + I
+mingens ESab
+ESabStar = dualVariety ESab
+LambdaStar = ESabStar + Psiperp
 Lambda = dualVariety LambdaStar
-dim Lambda == 1 -- Lambda should be a line
+dim Lambda -- Lambda should be a line
 degree Lambda
+E
 
 --==================================================
--- find rulings on Xab
+-- find b - a rulings on Xab
 --==================================================
 
 -- first find some lines on S(a,b)
+L1mat = matrix {{1, -1, 0, 0, 0, 0, 0},
+				{1, 0, -1, 0, 0, 0, 0},
+				{0, 0, 0, 1, -1, 0, 0},
+				{0, 0, 0, 1, 0, -1, 0},
+				{0, 0, 0, 1, 0, 0, -1}
+}
+L1 = ideal (L1mat*X)
+codim L1 == n - 1 -- double check that L1 is a line
+-- b - a = 3 - 2 = 1, so we just need one ruling
 
 -- now project those lines to X(a,b)
+L1perp = ideal ((transpose gens ker L1mat)*X)
+F1perp = L1perp + Psiperp
+F1perpmat = matrix {{1, 1, 1, 0, 0, 0, 0},
+					{0, 0, 0, 1, 1, 1, 1},
+					{0, 1, 0, 0, 0, 0, 0}}
+F1perp == ideal (F1perpmat*X)
+F1 = ideal ((transpose gens ker F1perpmat)*X)
 
 --==================================================
 -- compute Phi (spanned by line directrix + rulings)
 --==================================================
 
-Phi = Lambda
-
-Phiperp = 0
+Phiperp = Lambda + F1 -- not sure about this...
+mingens Phiperp
 
 --==================================================
 -- compute Y(a, b)*
 --==================================================
 
-Yabstar = Xabstar + Phiperp
+Yabstar = XabStar + Phiperp
+decompose Yabstar
