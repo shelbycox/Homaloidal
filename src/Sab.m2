@@ -78,14 +78,14 @@ codim E -- so E is 2 dimensional
 -- Psi \supset E^Perp a linear space.
 --==================================================
 
--- to find a dim a - 2 = 0 subspace contained in E
-PsiMat = matrix {(entries random(QQ^1, QQ^7))_0, -- Psi generators in matrix form
-				(entries random(QQ^1, QQ^7))_0, 
+-- to find a dim a - 2 = 0 subspace (i.e., a point) contained in E
+PsiMat = matrix {{1, 0, 0, 0, 0, 0, 0}, -- Psi generators in matrix form
+				{0, 0, 1, 0, 0, 0, 0}, 
 				{0, 0, 0, 1, 0, 0, 0}, 
 				{0, 0, 0, 0, 1, 0, 0}, 
 				{0, 0, 0, 0, 0, 1, 0}, 
 				{0, 0, 0, 0, 0, 0, 1}}
-Psi = ideal (PsiMat*X) -- double check the matrix form
+Psi = ideal (PsiMat*X) -- define the ideal
 isSubset(E, Psi) -- check that V(Psi) contains V(E)
 Psiperp = ideal ((transpose gens ker PsiMat)*X) -- get the orthogonal complement
 
@@ -97,14 +97,14 @@ saturate(Psi + I, ideal (x_0..x_6)) == ideal 1_R -- test that Psi is not a point
 XabStar = Istar + Psiperp -- get the ideal of XabStar
 codim XabStar
 
---Xab = dualVariety XabStar -- This computation now takes a long time...
+Xab = dualVariety XabStar -- WARNING! This computation is slow for points other than this special point!
 decompose Xab
-codim Xab == 4 -- I think Xab should be a surface, but it has dimension 3.
+codim Xab -- I think Xab should be a surface, but it has dimension 3.
 dim Xab -- 
 degree Xab -- 
 
 --==================================================
--- try computing the dual by hand -- IT WORKS!
+-- computing the dual by hand --
 --==================================================
 
 T = QQ[y_0..y_(a+b+1)][x_0..x_(a+b+1)];
@@ -127,74 +127,29 @@ codim Xab
 -- find the line directrix Lambda
 --==================================================
 
--- LambdaStar = Eperp + Psiperp
--- Lambda = dualVariety LambdaStar
--- dim Lambda
--- degree Lambda
+LambdaStar = Eperp + Psiperp
+Lambda = dualVariety LambdaStar
+dim Lambda == 1 -- Lambda should be a line
+degree Lambda
 
 --==================================================
 -- find rulings on Xab
 --==================================================
 
+-- first find some lines on S(a,b)
 
+-- now project those lines to X(a,b)
 
 --==================================================
 -- compute Phi (spanned by line directrix + rulings)
 --==================================================
 
+Phi = Lambda
 
+Phiperp = 0
 
 --==================================================
 -- compute Y(a, b)*
 --==================================================
 
--- Xabstar + Phiperp
-
---==================================================
---- row spans and their orthogonal complements
---==================================================
-T = QQ[x,y,z]
-M = random(QQ^2, QQ^3)
-L = ideal (M*(transpose vars T)) -- linear space is the kernel of M i.e. orthogonal complement of the row span, so the row span is the orthogonal complement of L
-rowSpan = ideal ((transpose gens ker M)*(transpose vars T)) -- this is the orthogonal complement of L, the row span of M
-
-dim L == 1 -- orthogonal complement of row span has dim: n - row rank = 1
-dim rowSpan == 2 -- row span has dim: row rank = 2
-saturate(L + rowSpan, ideal T_*) == ideal 1_T -- the row span and its orthogonal complement intersect only at the origin
-
-P = ideal ((transpose vars T) - (matrix (transpose M)_1)) -- a point in the row span
--- rowSpan contains P
-degree localize(rowSpan, P)
-dim (rowSpan + P)
-degree (rowSpan + P)
-
-Q = ideal ((vars T) - (matrix {{1,1,1}})) -- a point not in the row span
--- rowSpan does not contain Q
-degree localize(rowSpan, Q)
-dim (rowSpan + Q)
-degree (rowSpan + Q)
-
-
---=================================================
---- column spans and their orthogonal complement
---=================================================
-R = QQ[u,v,w]
-N = random(QQ^3, QQ^2)
-colSpan = ideal ((transpose gens ker transpose N)*(transpose vars R))
-O = ideal ((transpose N)*(transpose vars R))
-
-dim(colSpan) == 2 -- column span had dim: column rank = 2
-dim(O) == 1 -- orthogonal complement has dim: kernel rank = 1
-saturate(colSpan + O, ideal R_*) == ideal 1_R -- colSpan and its orthogonal complement intersect only at the origin
-
-Q = ideal ((transpose vars R) - (matrix N_1)) -- get a point in the column span
--- colSpan contains Q
-degree localize(colSpan, Q)
-dim (colSpan + Q)
-degree (colSpan + Q)
-
-P = ideal ((vars R) - (matrix {{1,1,1}})) -- a point not in the column span
--- colSpan does not contain P
-degree localize(colSpan, P)
-dim (colSpan + P)
-degree (colSpan + P)
+Yabstar = Xabstar + Phiperp
