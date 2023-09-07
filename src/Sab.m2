@@ -1,6 +1,18 @@
 --=================================================
--- construct S(a, b)
+-- (0) Set-up
 --=================================================
+a = 2;
+b = 3;
+n = a + b + 1;
+d = a + b;
+R = QQ[x_0..x_(a+b+1)];
+X = transpose vars R;
+
+--=================================================
+-- (1) construct S(a, b)
+--=================================================
+
+-- (1a) function to compute Sab matrix ============
 SMatrix = method();
 SMatrix = (a, b, x) -> (
    n := a + b;
@@ -20,12 +32,7 @@ S = (a, b, x) -> (
     minors(2, M)
     )
 
-a = 2;
-b = 3;
-n = a + b + 1;
-d = a + b;
-R = QQ[x_0..x_(a+b+1)];
-X = transpose vars R;
+-- (1b) compute the Sab ideal =====================
 
 I = S(a, b, R_*);
 netList I_* -- see the generators of I
@@ -35,53 +42,40 @@ dim I == 3 -- check that the projective dimension is 2 (so affine dimension is 3
 codim I == 4 -- projective dimension 2 in a PP6, so codimension is 4.
 
 JacI = jacobian I -- since S(a,b) is smooth we expect the Jacobian to have rank #vars - dim = (a + b + 2) - 2 = a + b, except possibly at the origin.
-
-I == saturate(I, ideal (x_0..x_(a+b))) -- saturation doesn't change the ideal in this case
-netList I_*
-
 --=================================================
--- compute E (and its orthogonal complement)
+-- (2) compute E (and its orthogonal complement)
 --=================================================
 
--- compute S(a,b)*
+-- (2a) compute S(a,b)* ===========================
 loadPackage "Resultants"
 Istar = dualVariety I
 codim Istar == 1 -- the dual is a hypersurface
 degree Istar == a + b -- the dual has degree a + b
 
--- compute the singular locus (up to degree b)
+-- (2b) compute the singular locus of deg >= b ====
 JacStar = jacobian Istar
 Jstar = ideal jacobian Istar -- This variety is not linear! (see the decomposition), but it doesn't look linear.
-D = decompose Jstar -- Jstar is actually a prime ideal of degree 6.
-netList (D_0)_*
-
-P = ideal (x_0..x_2, x_3 + random(QQ), x_4 - random(QQ), x_5 - random(QQ), x_6 - random(QQ))
-IstarP = localize (Istar, P)
-degree IstarP -- this point is a singularity of degree 5 in Istar
-
 JJstar = ideal jacobian Jstar -- singularities of degree at least 3 (= b in this example)
 decompose JJstar
 
--- According to the primary decomposition, the singularities of the dual lie in this linear space.
 Eperp = ideal(x_0..x_2) -- This is a linear space with sigularities containing some singularities of degree 5.
 codim Eperp == b -- codim b --> proj dimension E = b - 1 -- not sure if this holds in general
 
--- We only need Eperp for the computation of XabStar, so I don't think we need the code below.
+-- (2c) compute the orthogonal complement of Eperp=
 EperpMat = matrix {{1, 0, 0, 0, 0, 0, 0}, {0, 1, 0, 0, 0, 0, 0}, {0, 0, 1, 0, 0, 0, 0}} -- TODO: generalize this.
 Eperp == ideal (EperpMat*X)
 E = ideal ((transpose gens ker EperpMat)*X)
-codim E -- so E is 2 dimensional
 
 --==================================================
--- project S(a, b) to get X(a, b)
+-- (3) project S(a, b) to get X(a, b)
 
 -- NOTE: What we will actually compute is X(a, b)*
 -- as the intersection S(a, b)* \cap Psi, for some
 -- Psi \supset E^Perp a linear space.
 --==================================================
 
+-- (3a) compute a suitable Psi ====================
 EminusSab = saturate(E, I) -- see what generators we need in Psi
-
 -- to find a dim a - 2 = 0 subspace (i.e., a point) contained in E
 PsiMat = matrix {{1, 0, 0, 0, 0, 0, 0}, -- Psi generators in matrix form
 				{0, 0, 1, 0, 0, 0, 0}, 
@@ -91,49 +85,37 @@ PsiMat = matrix {{1, 0, 0, 0, 0, 0, 0}, -- Psi generators in matrix form
 				{0, 0, 0, 0, 0, 0, 1}}
 Psi = ideal (PsiMat*X) -- define the ideal
 
--- checks
+-- (3b) check that this Psi is good ===============
 isSubset(E, Psi) -- check that V(E) contains V(Psi)
 codim Psi == 6 -- check that Psi is a point
 saturate(Psi + I, ideal (x_0..x_6)) == ideal 1_R -- test that Psi is not a point on S(a,b)
 
+-- (3c) compute the orthogonal complement of Psi ==
 Psiperp = ideal ((transpose gens ker PsiMat)*X) -- get the orthogonal complement
 dim Psiperp == n
 
+-- (3d) compute X(a, b)* ==========================
 XabStar = Istar + Psiperp -- get the ideal of XabStar
-codim XabStar
+codim XabStar == 2 -- X(a,b) is a hypersurface in P^(a + b)
+-- Note: here we have the extra variable x_1, which should be eliminated
+degree XabStar == a + b
 
 --==================================================
--- computing X(a,b) = (X(a,b)*)*
+-- (4) computing X(a,b) = (X(a,b)*)*
 --==================================================
 
 Xab = dualVariety XabStar -- WARNING: times out for some Psi!
 decompose Xab
-codim Xab -- I think Xab should be a surface, but it has dimension 3.
-dim Xab -- 
+codim Xab
+dim Xab == 4 -- 
 degree Xab == a + b -- check the degree
 
---==================================================
--- computing the dual by hand --
---==================================================
-
-T = QQ[y_0..y_(a+b+1)][x_0..x_(a+b+1)];
-IT = sub(XabStar, T);
-N = transpose jacobian IT
-
-S = QQ[y_0..y_(a+b+1),x_0..x_(a+b+1)];
-N = sub(N, S);
-NN = (vars S)_{0..(a+b+1)} || N
-IT = sub(IT, S);
-
-J = IT + minors(3, NN);
-singJ = ideal singularLocus J
-J = saturate(J, singJ)
-Xab = eliminate(J, (entries (vars S)_{(a+b+2)..(2*a+2*b+3)})_0)
-
-codim Xab
+T = QQ[x_0,x_2..x_6]
+RtoT = map(T, R, {x_0, 0, x_2..x_6})
+TXab = RtoT(Xab)
 
 --==================================================
--- find the line directrix Lambda
+-- (5) find the line directrix Lambda
 --==================================================
 
 ESab = E + I
@@ -145,8 +127,10 @@ dim Lambda -- Lambda should be a line
 degree Lambda
 E
 
+Lambda = RtoT(E)
+
 --==================================================
--- find b - a rulings on Xab
+-- (6) find b - a rulings on Xab
 --==================================================
 
 -- first find some lines on S(a,b)
@@ -168,17 +152,63 @@ F1perpmat = matrix {{1, 1, 1, 0, 0, 0, 0},
 					{0, 1, 0, 0, 0, 0, 0}}
 F1perp == ideal (F1perpmat*X)
 F1 = ideal ((transpose gens ker F1perpmat)*X)
+TF1 = RtoT(F1)
 
 --==================================================
--- compute Phi (spanned by line directrix + rulings)
+-- (7) compute Phi (spanned by line directrix + rulings)
 --==================================================
 
-Phiperp = Lambda + F1 -- not sure about this...
-mingens Phiperp
+-- Phi has dim b - a - 1
+Phi = Lambda + TF1 -- not sure about this...
+Phimat = matrix {{1, 0, 1, 0, 0, 0, 0},
+				 {1, 0, 0, 0, 0, 0, -1},
+				 {1, 0, 0, 0, 0, -1, 0},
+				 {1, 0, 0, 0, -1, 0, 0},
+				 {1, 0, 0, -1, 0, 0, 0}}
+inverse Phimat
+Phi = RtoT(ideal(Phimat*X))
+Phiperp = RtoT(ideal ((transpose gens ker Phimat)*X))
 
 --==================================================
--- compute Y(a, b)*
+-- (8) compute Y(a, b)
+--==================================================
+inverse Phimat
+YabStar = RtoT(XabStar) + Phiperp
+YabStar = sub(YabStar, T)
+U = QQ[y_0..y_4]
+coordChangeMat = matrix {{1, 1, 1, 1, 1, 1},
+						 {0, -1, -1, -1, -1, -1},
+						 {1, 1, 0, 1, 1, 1},
+						 {1, 1, 1, 0, 1, 1},
+						 {1, 1, 1, 1, 0, 1},
+						 {1, 1, 1, 1, 1, 0}}
+coordChange = map(T, T, entries (coordChangeMat*(transpose vars T))_0)
+coordPhi = coordChange(Phi)
+coordTXab = coordChange(TXab)
+Yab = eliminate(x_2, coordTXab)
+degree Yab == a + b
+
+--==================================================
+-- (9) compute Y(a, b)*
 --==================================================
 
-Yabstar = XabStar + Phiperp
-decompose Yabstar
+Yabstar = dualVariety Yab
+codim Yabstar -- Yabstar should be a hypersurface
+degree Yabstar == a + b
+mingens Yabstar
+
+U = QQ[x_0, x_3..x_6]
+TtoU = map(U, T, {x_0, 0, x_3..x_6})
+UYabstar = TtoU(Yabstar)
+
+codim UYabstar == 1
+degree UYabstar == 5
+jacobian (UYabstar)_1
+UYabstar
+
+--==================================================
+-- (10) check to see if Yabstar is homaloidal
+--==================================================
+loadPackage "RationalMaps"
+polarYab = map(U, U, entries (jacobian UYabstar_1)_0) -- find the polar map
+inverseOfMap(polarYab); -- if this has no errors, then polarYab is birational
