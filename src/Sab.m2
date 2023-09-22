@@ -126,6 +126,7 @@ Lambda = dualVariety LambdaStar
 dim Lambda -- Lambda should be a line
 degree Lambda
 E
+eliminate(x_1, E)
 
 Lambda = RtoT(E)
 
