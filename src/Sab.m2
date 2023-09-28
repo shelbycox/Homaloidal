@@ -42,6 +42,8 @@ dim I == 3 -- check that the projective dimension is 2 (so affine dimension is 3
 codim I == 4 -- projective dimension 2 in a PP6, so codimension is 4.
 
 JacI = jacobian I -- since S(a,b) is smooth we expect the Jacobian to have rank #vars - dim = (a + b + 2) - 2 = a + b, except possibly at the origin.
+JacI
+ker JacI
 --=================================================
 -- (2) compute E (and its orthogonal complement)
 --=================================================
@@ -49,7 +51,7 @@ JacI = jacobian I -- since S(a,b) is smooth we expect the Jacobian to have rank 
 -- (2a) compute S(a,b)* ===========================
 loadPackage "Resultants"
 Istar = dualVariety I
-codim Istar == 1 -- the dual is a hypersurface
+codim Istar == 1 -- the dual is a hypersurface (defined by one equation)
 degree Istar == a + b -- the dual has degree a + b
 
 -- (2b) compute the singular locus of deg >= b ====
@@ -57,6 +59,7 @@ JacStar = jacobian Istar
 Jstar = ideal jacobian Istar -- This variety is not linear! (see the decomposition), but it doesn't look linear.
 JJstar = ideal jacobian Jstar -- singularities of degree at least 3 (= b in this example)
 decompose JJstar
+netList Jstar_*
 
 Eperp = ideal(x_0..x_2) -- This is a linear space with sigularities containing some singularities of degree 5.
 codim Eperp == b -- codim b --> proj dimension E = b - 1 -- not sure if this holds in general
