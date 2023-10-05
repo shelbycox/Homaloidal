@@ -33,7 +33,6 @@ S = (a, b, x) -> (
     )
 
 -- (1b) compute the Sab ideal =====================
-
 I = S(a, b, R_*);
 netList I_* -- see the generators of I
 
@@ -58,7 +57,8 @@ degree Istar == a + b -- the dual has degree a + b
 JacStar = jacobian Istar
 Jstar = ideal jacobian Istar -- This variety is not linear! (see the decomposition), but it doesn't look linear.
 JJstar = ideal jacobian Jstar -- singularities of degree at least 3 (= b in this example)
-decompose JJstar
+JJJstar = ideal jacobian JJstar
+decompose JJJstar
 netList Jstar_*
 
 Eperp = ideal(x_0..x_2) -- This is a linear space with sigularities containing some singularities of degree 5.
@@ -174,7 +174,23 @@ Phi = RtoT(ideal(Phimat*X))
 Phiperp = RtoT(ideal ((transpose gens ker Phimat)*X))
 
 --==================================================
--- (8) compute Y(a, b)
+-- (8a) compute Y(a, b) with elimination
+--==================================================
+
+newT = QQ[x_0,x_2..x_6,z_0..z_4]
+zvars = ((entries vars newT)_0)_{6..10}
+Phi = sub(Phi, newT)
+elimMat = gens Phi || (vars newT)_{6..10}
+Xab = sub(Xab, newT)
+projXab = Xab + minors(2, elimMat)
+satXab = saturate(projXab, product Phi_*)
+use newT
+x_0
+Yab = eliminate(satXab, {x_0,x_2,x_3,x_4,x_5,x_6})
+isPrime Yab == true
+
+--==================================================
+-- (8b) compute Y(a, b) with a linear change of coordinates
 --==================================================
 inverse Phimat
 YabStar = RtoT(XabStar) + Phiperp
@@ -196,10 +212,11 @@ degree Yab == a + b
 -- (9) compute Y(a, b)*
 --==================================================
 
+zT = QQ[z_0..z_4]
+Yab = sub(Yab, zT) -- don't need UYabstar after doing this
 Yabstar = dualVariety Yab
-codim Yabstar -- Yabstar should be a hypersurface
+codim Yabstar == 1 -- Yabstar should be a hypersurface
 degree Yabstar == a + b
-mingens Yabstar
 
 U = QQ[x_0, x_3..x_6]
 TtoU = map(U, T, {x_0, 0, x_3..x_6})
@@ -208,11 +225,22 @@ UYabstar = TtoU(Yabstar)
 codim UYabstar == 1
 degree UYabstar == 5
 jacobian (UYabstar)_1
-UYabstar
+#(terms Yabstar_0)
+texMath Yabstar_0
 
 --==================================================
 -- (10) check to see if Yabstar is homaloidal
 --==================================================
 loadPackage "RationalMaps"
-polarYab = map(U, U, entries (jacobian UYabstar_1)_0) -- find the polar map
+polarYab = map(zT, zT, entries (jacobian Yabstar_0)_0) -- find the polar map
 inverseOfMap(polarYab); -- if this has no errors, then polarYab is birational
+isBirationalMap(polarYab) -- or just check this!
+
+--==================================================
+-- BONUS: compute the Newton polytope of Yabstar
+--==================================================
+loadPackage("Polyhedra")
+N = newtonPolytope(Yabstar_0)
+fVector(N)
+vertices N
+volume N
