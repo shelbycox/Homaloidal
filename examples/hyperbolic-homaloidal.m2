@@ -18,3 +18,5 @@ F = ideal {coeffDetM_0, coeffDetM_2, coeffDetM_5, coeffDetM_1 - coeffDetM_3, coe
 dim F
 degree F
 mingens F
+
+-- graphic matroids are hyperbolic
