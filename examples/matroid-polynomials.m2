@@ -1,5 +1,6 @@
 loadPackage("Matroids")
 loadPackage("RationalMaps")
+loadPackage("Graphs")
 M = matroid({a,b,c,d,e}, {{a,b,d}, {c,d,e}}, EntryMode=>"nonbases")
 M = matroid({a,b,c,d},{}, EntryMode => "nonbases")
 U23 = uniformMatroid(2, 3)
@@ -13,9 +14,12 @@ matroidPolynomial = (M, x) -> {
     return sum T
 }
 
-R = QQ[x_0..x_6]
-M = specificMatroid("fano")
+graph ({{1,2},{2,3},{3,4}})
+
+M = specificMatroid("vamos")
+R = QQ[x_0..x_7]
 f = matroidPolynomial(M, x)
+#(factor f)
 phi = map(R, R, diff(vars R, f))
 isBirationalMap(phi)
 
@@ -28,3 +32,6 @@ D = matrix {{0, 0, 0, 0, 1, 0, 1, 1, 1, 1},
 D = sub(D, QQ)
 reducedRowEchelonForm(D)
 
+-- YES homaloidal: U2*, 
+-- NOT homaloidal: C5, fano, P6
+-- ??? homaloidal: vamos
