@@ -1,7 +1,7 @@
 loadPackage("Graphs")
 -- loadPackage("submatrix")
 n = 4 --number of vertices
-E = {{0,1},{1,2},{2,3},{3,0},{0,2}} --edge set
+E = {{0,1},{1,2},{2,3},{3,0},{0,2}} --edge set (start the vertices from 0)
 G = graph E 
 R = QQ[x_0..x_(length(E)-1)]
 --Laplacian matrix
