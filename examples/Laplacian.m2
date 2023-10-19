@@ -10,4 +10,4 @@ submatrix'(Lap, {3}, {3})
 --The following det is supposed to be our matroid polynomial corresponding to G.
 determinant(submatrix'(Lap, {3}, {3}))
 
-
+-- 
