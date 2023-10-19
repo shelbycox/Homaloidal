@@ -14,7 +14,8 @@ matroidPolynomial = (M, x) -> {
     return sum T
 }
 
-graph {{1,2},{2,3},{3,4}}
+G = Graphs$graph {{1,2},{2,3},{3,4}}
+mat
 
 M = specificMatroid("vamos")
 R = QQ[x_0..x_5]
