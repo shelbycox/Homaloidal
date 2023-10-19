@@ -1,5 +1,5 @@
 
---Checks the conjecture: Graph matroids polynomials are homaloidal iff the graph is chordal.
+--Checks the conjecture: Graph matroid polynomials are homaloidal iff the graph is chordal.
 --The conjecture seems to be true for connected graphs.
 loadPackage("Matroids")
 loadPackage("RationalMaps")
@@ -42,5 +42,5 @@ for m from 9 to binomial(n,2) do
     )
 
 
-E = {{1,2},{2,3},{3,4},{4,1},{1,3}}
+-- E = {{1,2},{2,3},{3,4},{4,1},{1,3}}
 
