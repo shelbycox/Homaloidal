@@ -1,10 +1,10 @@
 loadPackage("Matroids")
 loadPackage("RationalMaps")
 loadPackage("Graphs")
-M = matroid({a,b,c,d,e}, {{a,b,d}, {c,d,e}}, EntryMode=>"nonbases")
-M = matroid({a,b,c,d},{}, EntryMode => "nonbases")
+M = matroid({a,b,c,d,e,f}, {{a,b,c,d,e}, {a,b,c,d,f}, {a,b,c,e,f}}, EntryMode => "bases")
+M = matroid({a,b,c,d},{{abcd}}, EntryMode => "nonbases")
 U23 = uniformMatroid(2, 3)
-U24 = uniformMatroid(2, 4)
+U34 = uniformMatroid(3, 4)
 B = basisIndicatorMatrix U24
 
 makeMonomial = (x, v) -> product (for i from 0 to length(entries v)-1 list x_i^(v_i))
@@ -14,12 +14,12 @@ matroidPolynomial = (M, x) -> {
     return sum T
 }
 
-graph ({{1,2},{2,3},{3,4}})
+graph {{1,2},{2,3},{3,4}}
 
 M = specificMatroid("vamos")
-R = QQ[x_0..x_7]
+R = QQ[x_0..x_5]
 f = matroidPolynomial(M, x)
-#(factor f)
+(factor f)
 phi = map(R, R, diff(vars R, f))
 isBirationalMap(phi)
 
