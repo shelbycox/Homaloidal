@@ -1,17 +1,39 @@
 loadPackage("Graphs")
 -- loadPackage("submatrix")
-n = 4 --number of vertices
-<<<<<<< HEAD
-E = {{0,1},{1,2},{2,3},{3,0},{0,2}} --edge set (start the vertices from 0)
-G = graph E 
-=======
-E = {{0,1},{1,2},{2,3},{3,0},{0,2}} --edge set
-G = graph E
->>>>>>> 61a3a4d (updated matroid-polynomials.m2)
-R = QQ[x_0..x_(length(E)-1)]
---Laplacian matrix
-Lap = map(R^n, R^n, (i,j) -> if i==j then sum(positions(E, e -> member(i,e)), ind->x_ind) else if (member({i,j},E) or member({j,i},E)) then -x_(position(E, e-> e=={i,j} or e=={j,i})) else 0)
-submatrix'(Lap, {3}, {3})
+
+-- E: edge set (start vertices from 0.)
+Lap = (E) -> (
+    G := graph E;
+    n := length(vertices G);
+    R := QQ[x_0..x_(length(E)-1)];
+    --Laplacian matrix
+    map(R^n, R^n, (i,j) -> if i==j then sum(positions(E, e -> member(i,e)), ind->x_ind) else if (member({i,j},E) or member({j,i},E)) then -x_(position(E, e-> e=={i,j} or e=={j,i})) else 0)
+)
+
+-- E: edge set (start vertices from 0.), removedvertex: vertex removed from Laplacian
+-- Gets the covariance model
+Model = (E,removedvertex) -> (
+    SubLap := submatrix'(Lap(E), {removedvertex}, {removedvertex});
+    G := graph E;
+    n := length(vertices G);
+    S := {};
+    for p in toList((0,0)..(n-2,n-2)) do (if p_0<=p_1 then S = S | {p});
+    T := QQ[x_0..x_(length(E)-1), for i in S list s_i];
+    SubLap = sub(SubLap, T);
+    M := map(T^2, binomial(n,2), (i,j) -> if i==0 then s_(S_j) else (-1)^(sum toList S_j)*(determinant submatrix'(SubLap, {(S_j)_1}, {(S_j)_0})));
+    I := saturate (minors(2,M), ideal({determinant SubLap}));
+    J := saturate (I, for i in S list s_i);
+    eliminate(toList (x_0..x_(length(E)-1)), J)
+)
+
+
+
+
+E = {{0,1},{1,2},{0,2},{2,3},{3,4},{2,4}} --edge set (start the vertices from 0)
+removedvertex = 3
 --The following det is supposed to be our matroid polynomial corresponding to G.
-determinant(submatrix'(Lap, {3}, {3}))
+SubLap = submatrix'(Lap(E), {removedvertex}, {removedvertex})
+determinant(SubLap)
+
+
 
