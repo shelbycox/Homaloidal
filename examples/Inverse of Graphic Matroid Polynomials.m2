@@ -27,3 +27,11 @@ inverseOfJacobComplete = (n) -> (
     E:= Graphs$edges Graphs$completeGraph n;
     inverseOfJacob E
 )
+
+
+-- Example:
+E = {{1,2},{2,3},{3,4},{4,1},{1,3}}
+inverseOfJacob E
+
+n = 4
+inverseOfJacobComplete n
