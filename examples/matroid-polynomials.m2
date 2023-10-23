@@ -14,15 +14,18 @@ matroidPolynomial = (M, x) -> {
     return sum T
 }
 
-G = Graphs$graph {{1,2},{2,3},{3,4}}
-mat
+G = Graphs$graph {{1,2},{2,3},{3,4},{1,4},{1,3},{2,4}}
+M = matroid G
+#(bases M)
 
-M = specificMatroid("vamos")
 R = QQ[x_0..x_5]
 f = matroidPolynomial(M, x)
-(factor f)
+#(factor f)
 phi = map(R, R, diff(vars R, f))
-isBirationalMap(phi)
+psi = inverseOfMap(phi)
+peek psi
+PHI = inverseOfMap(psi)
+PHI*psi = id
 
 --           12 13 14 15 23 24 25 34 35 45
 D = matrix {{0, 0, 0, 0, 1, 0, 1, 1, 1, 1}, 
