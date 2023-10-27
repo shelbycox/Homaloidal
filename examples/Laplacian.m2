@@ -36,4 +36,3 @@ SubLap = submatrix'(Lap(E), {removedvertex}, {removedvertex})
 determinant(SubLap)
 
 
-

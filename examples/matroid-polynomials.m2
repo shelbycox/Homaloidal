@@ -17,6 +17,7 @@ matroidPolynomial = (M, x) -> {
 G = Graphs$graph {{1,2},{2,3},{3,4},{1,4},{1,3},{2,4}}
 M = matroid G
 #(bases M)
+edges G
 
 R = QQ[x_0..x_5]
 f = matroidPolynomial(M, x)
@@ -44,3 +45,78 @@ reducedRowEchelonForm(D)
 -- YES homaloidal: U2*, 
 -- NOT homaloidal: C5, fano, P6
 -- ??? homaloidal: vamos
+
+K6 = Graphs$completeGraph(6)
+M6 = matroid K6
+R6 = QQ[x_0..x_14]
+f6 = matroidPolynomial(M6, R6_*);
+phi6 = map(R6, R6, diff(vars R6, f6));
+psi6 = inverseMap(phi6)
+
+Mp = specificMatroid("nonpappus")
+circuits Mp
+flats Mp
+-- non-pappus matroid is chordal!
+Rp = QQ[x_0..x_8]
+fp = matroidPolynomial(Mp, Rp_*);
+phip = map(Rp, Rp, diff(vars Rp, fp));
+isBirational(phip) -- not birational
+-- what is the image? is a section birational?
+-- regular + chordal matroid is graphic?
+
+E = {{0,1}, {1,2}, {0,2}, {2,3}, {3,4}, {2,4}};
+G = Graphs$graph E;
+M = matroid G;
+R = QQ[x_0..x_5];
+f = matroidPolynomial(M, R_*);
+phi = map(R, R, diff(vars R, f));
+factor phi(f)
+psi = inverseMap(phi)
+g = ((matrix psi)_2)_0
+factor g
+factor phi(g)
+h2 = x_0 + x_1 - x_2
+factor phi(h)
+
+E = {{0,1}, {1,2}, {0,2}, {2,3}}
+G = Graphs$graph E
+M = matroid G
+R = QQ[x_0..x_3]
+f = matroidPolynomial(M, R_*)
+phi = map(R, R, diff(vars R, f))
+psi = inverseMap(phi)
+g = ((matrix psi)_0)_0
+factor g
+factor phi(g)
+
+E = {{0,1}, {1,2}, {2,3}, {0,3}, {0,2}}
+G = Graphs$graph E
+M = matroid G
+R = QQ[x_0..x_4]
+f = matroidPolynomial(M, R_*)
+phi = map(R, R, diff(vars R, f))
+psi = inverseMap(phi)
+g = ((matrix psi)_0)_0
+factor g
+factor phi(g)
+
+E = {{0,1}, {1,2}, {2,3}, {0,3}, {0,2}, {1,3}}
+G = Graphs$graph E
+M = matroid G
+R = QQ[x_0..x_5]
+f = matroidPolynomial(M, R_*)
+phi = map(R, R, diff(vars R, f))
+psi = inverseMap(phi)
+g = ((matrix psi)_0)_0
+factor g
+factor phi(g)
+
+E = {{0,1}, {1,2}, {0,2}}
+G = Graphs$graph E
+M = matroid G
+R = QQ[x_0..x_2]
+f = matroidPolynomial(M, R_*)
+phi = map(R, R, diff(vars R, f))
+psi = inverseMap(phi)
+g = ((matrix psi)_0)_0
+factor phi(g)
