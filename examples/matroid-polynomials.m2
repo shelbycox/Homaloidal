@@ -64,6 +64,7 @@ isBirational(phip) -- not birational
 -- what is the image? is a section birational?
 -- regular + chordal matroid is graphic?
 
+-- two triangles glued at a vertex
 E = {{0,1}, {1,2}, {0,2}, {2,3}, {3,4}, {2,4}};
 G = Graphs$graph E;
 M = matroid G;
@@ -78,6 +79,7 @@ factor phi(g)
 h2 = x_0 + x_1 - x_2
 factor phi(h)
 
+-- triangle and an edge
 E = {{0,1}, {1,2}, {0,2}, {2,3}}
 G = Graphs$graph E
 M = matroid G
@@ -89,17 +91,43 @@ g = ((matrix psi)_0)_0
 factor g
 factor phi(g)
 
+-- four cycle with a chord
 E = {{0,1}, {1,2}, {2,3}, {0,3}, {0,2}}
 G = Graphs$graph E
 M = matroid G
 R = QQ[x_0..x_4]
 f = matroidPolynomial(M, R_*)
 phi = map(R, R, diff(vars R, f))
+Phi = rationalMap(phi)
+degree(Phi)
 psi = inverseMap(phi)
 g = ((matrix psi)_0)_0
 factor g
 factor phi(g)
 
+-- four cycle
+E = {{0,1}, {1,2}, {2,3}, {0,3}}
+G = Graphs$graph E
+edges G
+M = matroid G
+R = QQ[x_0..x_3]
+f = matroidPolynomial(M, R_*)
+phi = map(R, R, diff(vars R, f))
+Phi = rationalMap(phi)
+degree(Phi)
+
+-- five cycle
+E = {{0,1}, {1,2}, {2,3}, {3,4}, {0,4}}
+G = Graphs$graph E
+edges G
+M = matroid G
+R = QQ[x_0..x_4]
+f = matroidPolynomial(M, R_*)
+phi = map(R, R, diff(vars R, f))
+Phi = rationalMap(phi)
+degree(Phi)
+
+-- complete graph on four vertices
 E = {{0,1}, {1,2}, {2,3}, {0,3}, {0,2}, {1,3}}
 G = Graphs$graph E
 M = matroid G
@@ -111,6 +139,7 @@ g = ((matrix psi)_0)_0
 factor g
 factor phi(g)
 
+-- triangle
 E = {{0,1}, {1,2}, {0,2}}
 G = Graphs$graph E
 M = matroid G
@@ -120,3 +149,13 @@ phi = map(R, R, diff(vars R, f))
 psi = inverseMap(phi)
 g = ((matrix psi)_0)_0
 factor phi(g)
+
+-- non-pappus
+M = specificMatroid("nonpappus")
+R = QQ[x_0..x_8];
+f = matroidPolynomial(M, R_*);
+gradf = diff(vars R, f);
+phi = map(R, R, gradf);
+Phi = rationalMap phi;
+isDominant(Phi)
+degree(Phi)

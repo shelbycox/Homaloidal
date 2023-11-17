@@ -17,5 +17,7 @@ hFactors = factor h;
 eval = map(QQ, R, random(QQ^1, QQ^8))
 det eval(H)
 
-loadPackage("RationalMaps")
-inverseOfMap(map(R, R, diff(v, f))) -- the map is not birational
+loadPackage("Cremona")
+phi = map(R, R, diff(v, f))
+inverseMap(phi) -- the map is not birational
+isDominant(phi)
