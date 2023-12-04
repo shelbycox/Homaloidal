@@ -12,13 +12,16 @@ matroidPolynomial = (M, x) -> {
 adjugate = M -> matrix for i from 1 to numrows(M) list for j from 1 to numcols(M) list ((-1)^(i+j))*(det submatrix'(M, {j-1}, {i-1}))
 
 
-k = 6 -- very slow for k >= 6
+k = 4 -- very slow for k >= 6
 G = Graphs$cycleGraph k
 edges G
 M = matroid G
 f = matroidPolynomial(M, QQ[x_0..x_(k-1)])
+eval = map(QQ[x_1..x_(k-1)], ring f, {1, x_1..x_(k-1)})
 gradf = diff(vars ring f, f)
-phi = map(ring f, ring f, gradf)
+gradfprime = eval(gradf)
+gradfprime = sub(gradfprime, ring f)
+phi = map(ring f, ring f, gradfprime)
 Phi = rationalMap(phi)
 degree Phi
 isDominant(phi)
