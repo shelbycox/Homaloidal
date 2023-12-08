@@ -14,12 +14,12 @@ matroidPolynomial = (M, x) -> {
     return sum T
 }
 
-G = Graphs$graph {{1,2},{2,3},{3,4},{1,4},{1,3},{2,4}}
+G = Graphs$graph {{1,2},{2,3},{3,4},{1,4},{1,3}}
 M = matroid G
 #(bases M)
 edges G
 
-R = QQ[x_0..x_5]
+R = QQ[x_0..x_4]
 f = matroidPolynomial(M, x)
 #(factor f)
 phi = map(R, R, diff(vars R, f))
@@ -31,7 +31,11 @@ PHI = inverseMap(psi)
 PHI*psi
 compose(phi, psi)
 compose(psi, phi)
-
+isBirational(phi)
+varSub = map(QQ[x_0..x_3], R, {x_0, x_1, x_2, x_3, -x_0 - x_1 - x_2 - x_3})
+fSub = varSub(f)
+phiSub = map(ring fSub, ring fSub, diff(vars ring fSub, fSub))
+isBirational(phiSub)
 
 --           12 13 14 15 23 24 25 34 35 45
 D = matrix {{0, 0, 0, 0, 1, 0, 1, 1, 1, 1}, 

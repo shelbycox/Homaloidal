@@ -226,6 +226,7 @@ codim UYabstar == 1
 degree UYabstar == 5
 jacobian (UYabstar)_1
 #(terms Yabstar_0)
+sum for i in (flatten entries (coefficients Yabstar_0)_1) list abs sub(i, QQ)
 texMath Yabstar_0
 
 --==================================================
