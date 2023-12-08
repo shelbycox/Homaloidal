@@ -86,9 +86,26 @@ M = matrix {{y_(1,1), y_(1,3), 0, 0, 0},--
 f = det M;
 gradf = diff(vars R, f);
 A = adjugate M;
+phi = map(ring gradf, ring gradf, gradf);
+isBirational(phi)
 
 M1 = submatrix(M, {0,1}, {0,1})
 f1 = det M1
 M2 = submatrix(M, {1,2,3,4}, {1,2,3,4})
 f2 = det M2
 
+A_(0,0) == diff(y_(1,1), f)
+2*A_(0,1) == diff(y_(1,3), f)
+A_(1,1) == diff(y_(3,3), f)
+2*A_(1,2) == diff(y_(3,4), f)
+A_(2,2) == diff(y_(4,4), f)
+(factor A_(0,3))
+
+diff(y_(1,1), f) == det M2
+diff(y_(1,1), f1)
+A_(0,0) % det M2
+(det M % y_(1,1)) % y_(1,3)
+
+T = QQ[a,b,c,d,e]
+N = matrix {{a, b, 0}, {b, c, d}, {0, d, e}}
+factor det N
