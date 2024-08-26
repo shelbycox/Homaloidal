@@ -36,13 +36,11 @@ S = (a, b, x) -> (
 I = S(a, b, R_*);
 netList I_* -- see the generators of I
 
+-- checks
 degree I == a + b -- check that the degree is a + b
 dim I == 3 -- check that the projective dimension is 2 (so affine dimension is 3)
 codim I == 4 -- projective dimension 2 in a PP6, so codimension is 4.
 
-JacI = jacobian I -- since S(a,b) is smooth we expect the Jacobian to have rank #vars - dim = (a + b + 2) - 2 = a + b, except possibly at the origin.
-JacI
-ker JacI
 --=================================================
 -- (2) compute E (and its orthogonal complement)
 --=================================================
