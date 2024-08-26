@@ -60,10 +60,10 @@ decompose JJJstar
 netList Jstar_*
 
 Eperp = ideal(x_0..x_2) -- This is a linear space with sigularities containing some singularities of degree 5.
-codim Eperp == b -- codim b --> proj dimension E = b - 1 -- not sure if this holds in general
+codim Eperp == b -- codim b --> proj dimension E = b - 1
 
 -- (2c) compute the orthogonal complement of Eperp=
-EperpMat = matrix {{1, 0, 0, 0, 0, 0, 0}, {0, 1, 0, 0, 0, 0, 0}, {0, 0, 1, 0, 0, 0, 0}} -- TODO: generalize this.
+EperpMat = matrix {{1, 0, 0, 0, 0, 0, 0}, {0, 1, 0, 0, 0, 0, 0}, {0, 0, 1, 0, 0, 0, 0}}
 Eperp == ideal (EperpMat*X)
 E = ideal ((transpose gens ker EperpMat)*X)
 
