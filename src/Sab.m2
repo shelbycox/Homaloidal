@@ -48,7 +48,9 @@ codim I == 4 -- projective dimension 2 in a PP6, so codimension is 4.
 -- (2a) compute S(a,b)* ===========================
 loadPackage "Resultants"
 Istar = dualVariety I
-codim Istar == 1 -- the dual is a hypersurface (defined by one equation)
+
+-- checks
+codim Istar == 1 -- the dual is a hypersurface
 degree Istar == a + b -- the dual has degree a + b
 
 -- (2b) compute the singular locus of deg >= b ====
