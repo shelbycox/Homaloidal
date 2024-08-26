@@ -234,8 +234,8 @@ texMath Yabstar_0
 --==================================================
 loadPackage "RationalMaps"
 polarYab = map(zT, zT, entries (jacobian Yabstar_0)_0) -- find the polar map
-inverseOfMap(polarYab); -- if this has no errors, then polarYab is birational
-isBirationalMap(polarYab) -- or just check this!
+isBirationalMap(polarYab) -- if true, then Yabstar is homaloidal!
+inverseOfMap(polarYab); -- computes an explicit inverse to polarYab
 
 --==================================================
 -- BONUS: compute the Newton polytope of Yabstar
